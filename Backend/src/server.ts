@@ -3,9 +3,7 @@ import app from './app';
 import { config } from './config/env';
 import { initializeDatabase } from './database/data-source';
 
-/**
- * Inicializa o servidor
- */
+// Função para iniciar o servidor
 const startServer = async () => {
   try {
     // Conecta ao banco de dados
@@ -14,10 +12,9 @@ const startServer = async () => {
     // Inicia o servidor
     const PORT = config.port;
     app.listen(PORT, () => {
-      console.log(`=> Servidor rodando na porta ${PORT}`);
-      console.log(`=> http://localhost:${PORT}/api`);
-      console.log(`=> Health check: http://localhost:${PORT}/api/health`);
-      console.log(`=> Documentacao Swagger: http://localhost:${PORT}/api-docs`);
+      console.log(`=> Servidor rodando na porta ${PORT}`);      
+      console.log(`=> Health check: http://{URL}}:${PORT}/api/health`);
+      console.log(`=> Documentacao Swagger: http://{URL}:${PORT}/api-docs`);
     });
   } catch (error) {
     console.error('Erro ao iniciar o servidor:', error);

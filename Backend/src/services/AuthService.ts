@@ -18,6 +18,7 @@ export class AuthService {
     // Gera token JWT
     const token = generateToken({ username });
 
+    // Retorna token e informações do usuário
     return {
       token,
       user: {

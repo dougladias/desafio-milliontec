@@ -60,9 +60,6 @@ export class CreateClientsTable1730000000000 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Remove a tabela clients
-    await queryRunner.dropTable('clients');
-
-    // Remove a extensão uuid-ossp (opcional, pode deixar comentado)
-    // await queryRunner.query(`DROP EXTENSION IF EXISTS "uuid-ossp"`);
+    await queryRunner.dropTable('clients');    
   }
 }

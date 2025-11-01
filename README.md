@@ -1,84 +1,96 @@
-# Desafio Técnico - Desenvolvedor React
+# Sistema de Gerenciamento de Clientes
 
-## Objetivo
+Sistema full-stack para cadastro e gerenciamento de clientes com autenticação JWT.
 
-Criar uma aplicação full-stack para **cadastro e listagem de clientes**, com autenticação simples, utilizando as tecnologias descritas abaixo.
+## 🚀 Tecnologias
 
----
+**Frontend**
+- React 19 + TypeScript + Vite
+- Material-UI
+- React Hook Form + Yup
+- React Router + Axios
 
-## 🎯 Requisitos
+**Backend**
+- Node.js + Express + TypeScript
+- PostgreSQL + TypeORM
+- JWT + Bcrypt
+- Jest (testes)
 
-### 1. Frontend (React)
+## 📋 Funcionalidades
 
-- Utilizar **React** com **TypeScript**
-- Utilizar **Material UI** para os componentes visuais
-- Seguir **padrões de projeto** (componentização, organização de pastas, etc.)
-- Utilizar **React Router** para gerenciamento de rotas
-- Tela de **Login** simples
-  - Usuário fixo: `admin`
-  - Senha fixa: `admin`
-- Tela de **Cadastro de Cliente**
-  - Campos: Nome, E-mail, Telefone, Endereço
-  - Permitir cadastrar e editar clientes
-- Tela de **Listagem de Clientes**
-  - Exibir os dados cadastrados
-  - Permitir editar um cliente
-  - Botão para **gerar um PDF** com a lista de clientes
+- Autenticação com JWT
+- CRUD completo de clientes
+- Busca de endereço por CEP (ViaCEP)
+- Geração de PDF da lista de clientes
+- Interface responsiva
+- Validações de formulário
+- Testes unitários e de integração
 
-### 2. Backend (Node.js + PostgreSQL)
+## ⚙️ Instalação e Execução
 
-- Criar uma API em **Node.js** com **TypeScript**
-- TypeORM
-- Utilizar **PostgreSQL** como banco de dados
-- Endpoints:
-  - Login (com verificação simples de usuário/senha)
-  - CRUD de clientes (Create, Read, Update)
-- Aplicar boas práticas de organização de código e separação de responsabilidades (ex: controllers, services, routes, etc.)
+### 🐳 Com Docker (Recomendado)
 
----
+```bash
+# Clone o repositório
+git clone <url-do-repo>
+cd Projeto-FullStack
 
-## 🔐 Autenticação
+# Suba os containers
+docker-compose up -d
 
-- Não é necessário implementar cadastro de usuários
-- A autenticação deve ser **simples**, com usuário e senha fixos (`admin` / `admin`)
-- O token pode ser um JWT ou uma implementação simples em memória/localStorage
-- Após o login, as demais rotas devem ser protegidas
+# Acesse a aplicação
+# Frontend: http://localhost:5173
+# Backend: http://localhost:3000
+# PostgreSQL: localhost:5432
+```
 
----
+### 💻 Sem Docker
 
-## 🧪 O que será avaliado
+**Backend:**
+```bash
+cd Backend
+npm install
+cp .env.example .env  # Configure as variáveis
+npm run dev           # Desenvolvimento
+npm test              # Testes
+```
 
-- Uso correto do **TypeScript**
-- Conhecimento e uso de **Material UI**
-- Boas práticas de **componentização** e organização de código
-- Implementação de **rotas** e **proteção de rotas**
-- Clareza, legibilidade e qualidade geral do código
-- Conhecimento de backend com **Node.js + PostgreSQL**
-- Integração entre frontend e backend
-- Geração de **PDF da listagem de clientes**
-- README com instruções de instalação e execução
+**Frontend:**
+```bash
+cd Frontend
+npm install
+npm run dev           # Desenvolvimento
+npm run build         # Produção
+```
 
----
+> **Nota:** Sem Docker você precisa ter o PostgreSQL instalado e configurado localmente.
 
-## 🚀 Extra (diferenciais)
+## 🔑 Credenciais
 
-- Testes unitários ou de integração
-- Deploy (ex: Vercel, Netlify, Railway, Render)
-- Utilização de Docker
+- Usuário: `admin`
+- Senha: `admin`
 
----
+## 📦 Scripts Disponíveis
 
-## 📝 Entrega
+**Backend:**
+- `npm run dev` - Inicia servidor em modo desenvolvimento
+- `npm run build` - Compila TypeScript
+- `npm test` - Executa testes
 
-- Suba o projeto em um repositório **público no GitHub**
-- Envie o link do repositório para avaliação
+**Frontend:**
+- `npm run dev` - Inicia aplicação em desenvolvimento
+- `npm run build` - Build para produção
+- `npm run preview` - Preview do build
 
----
+## 🗄️ Banco de Dados
 
-## 📦 Dicas
+Configure o PostgreSQL e atualize o `.env`:
 
-- Você pode usar bibliotecas para geração de PDF como [`jspdf`](https://github.com/parallax/jsPDF) ou [`react-pdf`](https://github.com/wojtekmaj/react-pdf)
-
----
-
-Boa sorte! 🚀
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=seu_usuario
+DB_PASSWORD=sua_senha
+DB_DATABASE=client_management
+JWT_SECRET=seu_secret_key
+```

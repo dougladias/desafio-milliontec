@@ -8,10 +8,7 @@ export class AuthController {
     this.authService = new AuthService();
   }
 
-  /**
-   * POST /api/auth/login
-   * Realiza login e retorna token JWT
-   */
+  // Realiza o login do usuário
   login = async (req: Request, res: Response): Promise<void> => {
     try {
       const { username, password } = req.body;
@@ -23,6 +20,7 @@ export class AuthController {
 
       const result = await this.authService.login({ username, password });
 
+      // Retorna o token JWT e informações do usuário
       res.status(200).json(result);
     } catch (error) {
       if (error instanceof Error && error.message === 'Credenciais inválidas') {

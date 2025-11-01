@@ -12,8 +12,7 @@ export const AppDataSource = new DataSource({
   username: config.database.username,
   password: config.database.password,
   database: config.database.database,
-
-  // Synchronize: apenas em desenvolvimento
+  
   // Em produção, usamos migrations para maior segurança
   synchronize: config.nodeEnv === 'development',
 
@@ -27,7 +26,7 @@ export const AppDataSource = new DataSource({
       ? [join(__dirname, 'migrations/**/*.js')]
       : [join(__dirname, 'migrations/**/*.ts')],
 
-  // Executa migrations automaticamente ao iniciar (apenas produção)
+  // Executa migrations automaticamente ao iniciar
   migrationsRun: config.nodeEnv === 'production',
 });
 

@@ -8,10 +8,7 @@ export class ClientController {
     this.clientService = new ClientService();
   }
 
-  /**
-   * POST /api/clients
-   * Cria um novo cliente
-   */
+  // Cria um novo cliente
   create = async (req: Request, res: Response): Promise<void> => {
     try {
       const { name, email, phone, address } = req.body;
@@ -21,6 +18,7 @@ export class ClientController {
         return;
       }
 
+      // Chama o serviço para criar o cliente
       const client = await this.clientService.create({
         name,
         email,
@@ -28,6 +26,7 @@ export class ClientController {
         address,
       });
 
+      // Retorna o cliente criado
       res.status(201).json(client);
     } catch (error) {
       if (error instanceof Error && error.message === 'Email já cadastrado') {
@@ -38,10 +37,7 @@ export class ClientController {
     }
   };
 
-  /**
-   * GET /api/clients
-   * Lista todos os clientes
-   */
+  // Lista todos os clientes
   findAll = async (_req: Request, res: Response): Promise<void> => {
     try {
       const clients = await this.clientService.findAll();
@@ -51,10 +47,7 @@ export class ClientController {
     }
   };
 
-  /**
-   * GET /api/clients/:id
-   * Busca um cliente por ID
-   */
+  // Busca um cliente por ID  
   findById = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
@@ -69,10 +62,7 @@ export class ClientController {
     }
   };
 
-  /**
-   * PUT /api/clients/:id
-   * Atualiza um cliente
-   */
+  // Atualiza um cliente
   update = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
@@ -83,6 +73,7 @@ export class ClientController {
         return;
       }
 
+      // Chama o serviço para atualizar o cliente
       const client = await this.clientService.update(id, {
         name,
         email,
@@ -90,6 +81,7 @@ export class ClientController {
         address,
       });
 
+      // Retorna o cliente atualizado
       res.status(200).json(client);
     } catch (error) {
       if (error instanceof Error) {
@@ -104,10 +96,7 @@ export class ClientController {
     }
   };
 
-  /**
-   * DELETE /api/clients/:id
-   * Deleta um cliente
-   */
+  // Deleta um cliente
   delete = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;

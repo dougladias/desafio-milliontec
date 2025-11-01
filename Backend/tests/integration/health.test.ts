@@ -1,6 +1,7 @@
 import request from 'supertest';
 import app from '../../src/app';
 
+// Testes de integração para a API de Health Check
 describe('Health Check API', () => {
   describe('GET /api/health', () => {
     it('deve retornar status OK', async () => {
@@ -14,6 +15,7 @@ describe('Health Check API', () => {
       expect(response.body.message).toBe('API is running');
     });
 
+    // Teste para garantir que o Content-Type é application/json
     it('deve retornar Content-Type application/json', async () => {
       const response = await request(app)
         .get('/api/health')

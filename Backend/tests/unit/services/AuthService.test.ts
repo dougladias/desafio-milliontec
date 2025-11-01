@@ -1,5 +1,6 @@
 import { AuthService } from '../../../src/services/AuthService';
 
+// Testes unitários para o AuthService
 describe('AuthService', () => {
   let authService: AuthService;
 
@@ -7,6 +8,7 @@ describe('AuthService', () => {
     authService = new AuthService();
   });
 
+  // Testes para o método login
   describe('login', () => {
     it('deve retornar token e usuário com credenciais válidas', async () => {
       const result = await authService.login({
@@ -21,6 +23,7 @@ describe('AuthService', () => {
       expect(result.token.length).toBeGreaterThan(0);
     });
 
+    // Testes para credenciais inválidas
     it('deve lançar erro com username inválido', async () => {
       await expect(
         authService.login({
@@ -30,6 +33,7 @@ describe('AuthService', () => {
       ).rejects.toThrow('Credenciais inválidas');
     });
 
+    // Testes para credenciais inválidas
     it('deve lançar erro com password inválido', async () => {
       await expect(
         authService.login({
@@ -39,6 +43,7 @@ describe('AuthService', () => {
       ).rejects.toThrow('Credenciais inválidas');
     });
 
+    // Testes para credenciais inválidas
     it('deve lançar erro com ambos inválidos', async () => {
       await expect(
         authService.login({
@@ -46,8 +51,6 @@ describe('AuthService', () => {
           password: 'wrong',
         })
       ).rejects.toThrow('Credenciais inválidas');
-    });
-
-    // Removido: timestamp pode ser igual em execução rápida
+    });    
   });
 });

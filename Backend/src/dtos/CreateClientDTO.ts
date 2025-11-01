@@ -1,14 +1,15 @@
 import { IsEmail, IsNotEmpty, IsString, Length, Matches } from 'class-validator';
 
+// DTO para criação de um novo cliente
 export class CreateClientDTO {
   @IsNotEmpty({ message: 'Nome é obrigatório' })
   @IsString({ message: 'Nome deve ser uma string' })
-  @Length(3, 255, { message: 'Nome deve ter entre 3 e 255 caracteres' })
+  @Length(4, 100, { message: 'Nome deve ter entre 4 e 100 caracteres' })
   name: string;
 
   @IsNotEmpty({ message: 'E-mail é obrigatório' })
   @IsEmail({}, { message: 'E-mail inválido' })
-  @Length(5, 255, { message: 'E-mail deve ter entre 5 e 255 caracteres' })
+  @Length(10, 100, { message: 'E-mail deve ter entre 10 e 100 caracteres' })
   email: string;
 
   @IsNotEmpty({ message: 'Telefone é obrigatório' })

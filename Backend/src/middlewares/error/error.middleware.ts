@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-/**
- * Middleware para tratamento de erros
- */
+// Middleware global para tratamento de erros
 export const errorMiddleware = (
   error: Error,
   _req: Request,
@@ -11,6 +9,7 @@ export const errorMiddleware = (
 ): void => {
   console.error('❌ Erro:', error);
 
+  // Responde com status 500 e mensagem de erro genérica
   res.status(500).json({
     error: 'Erro interno do servidor',
     message: error.message,

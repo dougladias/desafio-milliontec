@@ -8,16 +8,13 @@ const options: swaggerJsdoc.Options = {
       title: 'API de Gerenciamento de Clientes',
       version: '1.0.0',
       description: `
-Backend da aplicação de cadastro e listagem de clientes desenvolvido como parte do desafio técnico para desenvolvedor React.
+Backend da aplicação de cadastro e listagem de clientes.
 
 ## Funcionalidades
 - Autenticação JWT
 - CRUD completo de clientes
 - Validação de dados
-      `.trim(),      
-      license: {
-        name: 'ISC',
-      },
+      `.trim(),     
     },
     servers: [
       {

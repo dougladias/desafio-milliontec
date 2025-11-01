@@ -7,7 +7,7 @@ import { validate, ValidationError } from 'class-validator';
 export const validateDTO = (dtoClass: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Transforma o body plain object em uma instância da classe DTO
+      // Converte o corpo da requisição para uma instância do DTO
       const dtoInstance = plainToInstance(dtoClass, req.body);
 
       // Valida a instância
@@ -27,7 +27,7 @@ export const validateDTO = (dtoClass: any) => {
         return;
       }
 
-      // Substitui o body pela instância validada
+      // Substitui o corpo da requisição pela instância validada
       req.body = dtoInstance;
       next();
     } catch (error) {
