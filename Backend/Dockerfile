@@ -1,0 +1,17 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package.json
+COPY package.json ./
+
+# Install ALL dependencies
+RUN npm install
+
+# Copy source code
+COPY . .
+
+EXPOSE 3001
+
+# Use the exact same command that works locally
+CMD ["npm", "run", "start"]
