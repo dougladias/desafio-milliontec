@@ -6,6 +6,17 @@ import { initializeDatabase } from '../src/database/data-source';
 let dbInitialized = false;
 
 const handler = async (req: any, res: any) => {
+  // Configurar CORS manualmente para Vercel
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Inicializa o banco apenas na primeira requisição
   if (!dbInitialized) {
     try {
