@@ -1,6 +1,7 @@
 import * as yup from 'yup';
+import type { CreateClientDTO } from '../types';
 
-export const clientSchema = yup.object().shape({
+export const clientSchema: yup.ObjectSchema<CreateClientDTO> = yup.object().shape({
   name: yup.string().required('Nome é obrigatório'),
   email: yup
     .string()
@@ -18,7 +19,5 @@ export const clientSchema = yup.object().shape({
       const cleaned = value.replace(/\D/g, '');
       return cleaned.length >= 10;
     }),
-  // address continua obrigatório para retrocompatibilidade
-  // mas será preenchido automaticamente pelo AddressInput
-  address: yup.string().notRequired(),
+  address: yup.string().optional(),
 });

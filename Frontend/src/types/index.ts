@@ -12,7 +12,7 @@ export interface CreateClientDTO {
   name: string;
   email: string;
   phone: string;
-  address: string;
+  address?: string;
 }
 
 export interface UpdateClientDTO {
