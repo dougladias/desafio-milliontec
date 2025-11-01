@@ -2,16 +2,19 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package.json
-COPY package.json ./
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Install ALL dependencies
+# Install ALL dependencies (including devDependencies for build)
 RUN npm install
 
 # Copy source code
 COPY . .
 
+# Build TypeScript to JavaScript
+RUN npm run build
+
 EXPOSE 3001
 
-# Use the exact same command that works locally
+# Start the compiled application
 CMD ["npm", "run", "start"]

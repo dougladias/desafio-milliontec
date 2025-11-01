@@ -39,12 +39,12 @@ Servidor rodando em: http://localhost:3001
 
 ```bash
 # Na pasta raiz do backend
-docker-compose up -d
+docker-compose up --build
 ```
 
 ## Documentacao da API
 
-Acesse: http://localhost:3000/api-docs
+Acesse: http://localhost:3001/api-docs
 
 ## Testes
 

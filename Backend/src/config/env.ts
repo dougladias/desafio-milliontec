@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 
 // Carrega as variáveis de ambiente do arquivo .env
-dotenv.config();
+dotenv.config({ quiet: true });
 
 // Exporta as configurações do ambiente
 export const config = {  

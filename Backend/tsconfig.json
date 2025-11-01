@@ -9,7 +9,6 @@
 
     /* Modules */
     "module": "commonjs",
-    "rootDir": "./",
     "moduleResolution": "node",
     "baseUrl": "./src",
     "paths": {

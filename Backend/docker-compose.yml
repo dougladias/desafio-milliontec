@@ -46,9 +46,6 @@ services:
         condition: service_healthy
     networks:
       - backend-network
-    volumes:
-      - .:/app
-      - /app/node_modules
 
 # Volumes para persistência de dados
 volumes:
