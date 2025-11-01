@@ -22,7 +22,7 @@ export const DashboardContent = () => {
       const clients = await clientService.getAll();
       setTotalClients(clients.length);
     } catch (error) {
-      console.error('Erro ao carregar estatísticas', error);
+      console.error('Erro ao carregar estatï¿½sticas', error);
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,7 @@ export const DashboardContent = () => {
               color="#00D9C0"
             />
             <StatCard
-              title="Novos este Mês"
+              title="Novos este MÃªs"
               value={totalClients}
               icon={<PersonAddIcon sx={{ fontSize: 28 }} />}
               color="#F5A623"

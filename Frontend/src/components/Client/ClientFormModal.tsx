@@ -7,21 +7,28 @@ import {
   Box,
   Alert,
   CircularProgress,
+  useMediaQuery,
+  useTheme,
+  Divider,
+  Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormInput } from '../forms';
 import { ClientFormActions } from './ClientFormActions';
+import { AddressInput } from '../AddressInput';
+import type { AddressData } from '../AddressInput/types';
 import { clientSchema } from '../../validations';
 import { clientService } from '../../services/clientService';
 import type { CreateClientDTO } from '../../types';
 import { formatPhoneInput, formatPhone, unformatPhone } from '../../utils/formatters';
+import { formatAddressToString, parseAddressFromString } from '../../utils/addressHelpers';
 
 interface ClientFormModalProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (message: string) => void;
   clientId?: number;
 }
 
@@ -30,6 +37,19 @@ export const ClientFormModal = ({ open, onClose, onSuccess, clientId }: ClientFo
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(isEditMode);
   const [error, setError] = useState<string>('');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Estado para armazenar os dados de endereço
+  const [addressData, setAddressData] = useState<AddressData>({
+    cep: '',
+    street: '',
+    neighborhood: '',
+    city: '',
+    state: '',
+    complement: '',
+    number: '',
+  });
 
   const {
     register,
@@ -54,6 +74,18 @@ export const ClientFormModal = ({ open, onClose, onSuccess, clientId }: ClientFo
       setValue('email', client.email);
       setValue('phone', client.phone);
       setValue('address', client.address);
+
+      // Tenta fazer o parse do endereço existente
+      const parsedAddress = parseAddressFromString(client.address);
+      setAddressData({
+        cep: parsedAddress.cep || '',
+        street: parsedAddress.street || '',
+        neighborhood: parsedAddress.neighborhood || '',
+        city: parsedAddress.city || '',
+        state: parsedAddress.state || '',
+        complement: parsedAddress.complement || '',
+        number: parsedAddress.number || '',
+      });
     } catch (err) {
       const errorMessage = err instanceof Error && 'response' in err
         ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
@@ -70,6 +102,16 @@ export const ClientFormModal = ({ open, onClose, onSuccess, clientId }: ClientFo
     } else if (open && !isEditMode) {
       reset();
       setError('');
+      // Limpa o endereço ao abrir modal de novo cliente
+      setAddressData({
+        cep: '',
+        street: '',
+        neighborhood: '',
+        city: '',
+        state: '',
+        complement: '',
+        number: '',
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, clientId, isEditMode]);
@@ -88,19 +130,24 @@ export const ClientFormModal = ({ open, onClose, onSuccess, clientId }: ClientFo
       setLoading(true);
       setError('');
 
+      // Converte os dados de endereço em string para enviar ao backend
+      const addressString = formatAddressToString(addressData);
+
       const cleanData = {
         ...data,
         phone: formatPhone(unformatPhone(data.phone)),
+        address: addressString, // Usa o endereço formatado do AddressInput
       };
 
       if (isEditMode && clientId) {
         await clientService.update(clientId, cleanData);
+        onSuccess('Cliente atualizado com sucesso!');
       } else {
         await clientService.create(cleanData);
+        onSuccess('Cliente cadastrado com sucesso!');
       }
 
       reset();
-      onSuccess();
       onClose();
     } catch (err) {
       const errorMessage = err instanceof Error && 'response' in err
@@ -129,8 +176,10 @@ export const ClientFormModal = ({ open, onClose, onSuccess, clientId }: ClientFo
       slotProps={{
         paper: {
           sx: {
-            borderRadius: 3,
+            borderRadius: 2,
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+            m: isMobile ? 1 : 2,
+            maxHeight: isMobile ? '90vh' : 'calc(100vh - 64px)',
           },
         },
       }}
@@ -142,9 +191,11 @@ export const ClientFormModal = ({ open, onClose, onSuccess, clientId }: ClientFo
           alignItems: 'center',
           pb: 2,
           borderBottom: '1px solid #E0E0E0',
+          px: isMobile ? 2 : 3,
+          pt: isMobile ? 2 : 3,
         }}
       >
-        <Box sx={{ fontSize: '1.25rem', fontWeight: 600, color: '#001E27' }}>
+        <Box sx={{ fontSize: isMobile ? '1.125rem' : '1.25rem', fontWeight: 600, color: '#001E27' }}>
           {isEditMode ? 'Editar Cliente' : 'Novo Cliente'}
         </Box>
         <IconButton
@@ -161,7 +212,7 @@ export const ClientFormModal = ({ open, onClose, onSuccess, clientId }: ClientFo
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ pt: 3 }}>
+      <DialogContent sx={{ pt: 3, px: isMobile ? 2 : 3, pb: isMobile ? 2 : 3 }}>
         {loadingData ? (
           <Box display="flex" justifyContent="center" py={8}>
             <CircularProgress />
@@ -198,12 +249,15 @@ export const ClientFormModal = ({ open, onClose, onSuccess, clientId }: ClientFo
               disabled={loading}
             />
 
-            <FormInput
-              register={register('address')}
-              label="Endereço"
-              multiline
-              rows={3}
-              error={errors.address?.message}
+            <Divider sx={{ my: 3 }}>
+              <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                Endereço
+              </Typography>
+            </Divider>
+
+            <AddressInput
+              onAddressChange={setAddressData}
+              initialAddress={addressData}
               disabled={loading}
             />
 

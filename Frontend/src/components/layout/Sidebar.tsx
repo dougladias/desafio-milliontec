@@ -1,4 +1,4 @@
-import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, IconButton, Tooltip } from '@mui/material';
+import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, IconButton, Tooltip, Drawer, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -6,6 +6,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import logoHeader from '../../assets/logo_header.webp';
 
 export const SIDEBAR_WIDTH = 280;
 export const SIDEBAR_COLLAPSED_WIDTH = 80;
@@ -19,6 +20,8 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleLogout = () => {
     logout();
@@ -30,18 +33,15 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     { text: 'Clientes', icon: <PeopleIcon />, path: '/clients' },
   ];
 
-  return (
+  const sidebarContent = (
     <Box
       sx={{
-        width: isOpen ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH,
+        width: isMobile ? SIDEBAR_WIDTH : (isOpen ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH),
         height: '100vh',
-        bgcolor: '#000303',
+        bgcolor: '#000706',
         color: '#FFFFFF',
         display: 'flex',
         flexDirection: 'column',
-        position: 'fixed',
-        left: 0,
-        top: 0,
         boxShadow: '4px 0 12px rgba(0, 0, 0, 0.1)',
         transition: 'width 0.3s ease',
         overflow: 'hidden',
@@ -49,13 +49,19 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     >
       {/* Logo/Título */}
       <Box sx={{ p: 3, position: 'relative', minHeight: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {isOpen ? (
+        {(isOpen || isMobile) ? (
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-            <Box sx={{ flex: 1, textAlign: 'center' }}>
-              <Typography variant="h5" fontWeight={700} sx={{ color: '#00D9C0', whiteSpace: 'nowrap' }}>
-                MillionTech
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#B0B0B0', mt: 0.5, whiteSpace: 'nowrap' }}>
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <img
+                src={logoHeader}
+                alt="MillionTech Logo"
+                style={{
+                  maxWidth: '120px',
+                  height: 'auto',
+                  objectFit: 'contain'
+                }}
+              />
+              <Typography variant="body2" sx={{ color: '#B0B0B0', mt: 1, whiteSpace: 'nowrap' }}>
                 Sistema de Clientes
               </Typography>
             </Box>
@@ -131,7 +137,7 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                 <ListItemIcon
                   sx={{
                     color: location.pathname === item.path ? '#00D9C0' : '#B0B0B0',
-                    minWidth: isOpen ? 40 : 0,
+                    minWidth: (isOpen || isMobile) ? 40 : 0,
                     justifyContent: 'center',
                     transition: 'min-width 0.3s ease',
                   }}
@@ -141,7 +147,7 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                 <ListItemText
                   primary={item.text}
                   sx={{
-                    opacity: isOpen ? 1 : 0,
+                    opacity: (isOpen || isMobile) ? 1 : 0,
                     transition: 'opacity 0.2s ease',
                     whiteSpace: 'nowrap',
                     '& .MuiTypography-root': {
@@ -168,19 +174,19 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           slotProps={{
             tooltip: {
               sx: {
-                bgcolor: '#F5A623',
+                bgcolor: '#00D9C0',
                 color: '#000303',
                 fontWeight: 600,
                 fontSize: '0.875rem',
                 py: 1,
                 px: 2,
                 borderRadius: 2,
-                boxShadow: '0 4px 12px rgba(245, 166, 35, 0.4)',
+                boxShadow: '0 4px 12px rgba(0, 217, 192, 0.4)',
               },
             },
             arrow: {
               sx: {
-                color: '#F5A623',
+                color: '#00D9C0',
               },
             },
           }}
@@ -197,8 +203,8 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           >
             <ListItemIcon
               sx={{
-                color: '#F5A623',
-                minWidth: isOpen ? 40 : 0,
+                color: '#00D9C0',
+                minWidth: (isOpen || isMobile) ? 40 : 0,
                 justifyContent: 'center',
                 transition: 'min-width 0.3s ease',
               }}
@@ -208,11 +214,11 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
             <ListItemText
               primary="Sair"
               sx={{
-                opacity: isOpen ? 1 : 0,
+                opacity: (isOpen || isMobile) ? 1 : 0,
                 transition: 'opacity 0.2s ease',
                 whiteSpace: 'nowrap',
                 '& .MuiTypography-root': {
-                  color: '#F5A623',
+                  color: '#00D9C0',
                   fontWeight: 500,
                 },
               }}
@@ -220,6 +226,45 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           </ListItemButton>
         </Tooltip>
       </Box>
+    </Box>
+  );
+
+  // Em mobile, usa Drawer; em desktop, usa Box fixo
+  if (isMobile) {
+    return (
+      <Drawer
+        anchor="left"
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        ModalProps={{
+          keepMounted: true, // Melhor performance em mobile
+        }}
+        PaperProps={{
+          sx: {
+            width: SIDEBAR_WIDTH,
+            bgcolor: 'transparent',
+            boxShadow: 'none',
+          },
+        }}
+      >
+        {sidebarContent}
+      </Drawer>
+    );
+  }
+
+  // Desktop: sidebar fixo
+  return (
+    <Box
+      sx={{
+        width: isOpen ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH,
+        height: '100vh',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        transition: 'width 0.3s ease',
+      }}
+    >
+      {sidebarContent}
     </Box>
   );
 };

@@ -2,27 +2,20 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Box,
-  Button,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
-  IconButton,
   Alert,
   CircularProgress,
   Snackbar,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { clientService } from '../../services/clientService';
 import type { Client } from '../../types';
 import { generateClientsPDF } from '../../utils/pdfGenerator';
+import { ClientListHeader } from './ClientListHeader';
+import { ClientTable } from './ClientTable';
 import { ClientFormModal } from './ClientFormModal';
+import { ClientViewModal } from './ClientViewModal';
+import { ClientDeleteConfirm } from './ClientDeleteConfirm';
 
 export const ClientList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,6 +25,10 @@ export const ClientList = () => {
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<number | undefined>();
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState<Client | null>(null);
 
   useEffect(() => {
     loadClients();
@@ -64,11 +61,22 @@ export const ClientList = () => {
   };
 
   const handleEdit = (id: number) => {
+    const client = clients.find(c => c.id === id);
+    if (client) {
+      setSuccessMessage(`Editando dados de ${client.name}`);
+    }
     setSelectedClientId(id);
     setModalOpen(true);
   };
 
+  const handleView = (client: Client) => {
+    setSelectedClient(client);
+    setViewModalOpen(true);
+    setSuccessMessage(`Visualizando dados de ${client.name}`);
+  };
+
   const handleNew = () => {
+    setSuccessMessage('Cadastrando novo cliente');
     setSelectedClientId(undefined);
     setModalOpen(true);
   };
@@ -78,9 +86,45 @@ export const ClientList = () => {
     setSelectedClientId(undefined);
   };
 
-  const handleSuccess = () => {
+  const handleViewModalClose = () => {
+    setViewModalOpen(false);
+    setSelectedClient(null);
+  };
+
+  const handleDeleteClick = (client: Client) => {
+    setSuccessMessage(`Excluindo dados de ${client.name}`);
+    setClientToDelete(client);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmOpen(false);
+    setClientToDelete(null);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!clientToDelete) return;
+
+    try {
+      const clientName = clientToDelete.name;
+      await clientService.delete(clientToDelete.id);
+      setDeleteConfirmOpen(false);
+      setClientToDelete(null);
+      loadClients();
+      setSuccessMessage(`Cliente ${clientName} excluído com sucesso!`);
+    } catch (err) {
+      const errorMessage = err instanceof Error && 'response' in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+        : 'Erro ao excluir cliente';
+      setError(errorMessage || 'Erro ao excluir cliente');
+      setDeleteConfirmOpen(false);
+      setClientToDelete(null);
+    }
+  };
+
+  const handleSuccess = (message: string) => {
     loadClients();
-    setSuccessMessage('Cliente salvo com sucesso!');
+    setSuccessMessage(message);
   };
 
   const handleGeneratePDF = () => {
@@ -94,44 +138,12 @@ export const ClientList = () => {
 
   return (
     <Box>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
-        <Box>
-          <Typography variant="h4" component="h1" fontWeight={700} sx={{ color: '#001E27' }}>
-            Clientes
-          </Typography>
-          <Typography variant="body2" color="text.secondary" mt={0.5}>
-            Gerencie todos os seus clientes cadastrados
-          </Typography>
-        </Box>
-        <Box display="flex" gap={2}>
-          <Button
-            variant="outlined"
-            startIcon={<PictureAsPdfIcon />}
-            onClick={handleGeneratePDF}
-            disabled={loading || clients.length === 0}
-            sx={{
-              borderWidth: 2,
-              '&:hover': {
-                borderWidth: 2,
-              },
-            }}
-          >
-            Gerar PDF
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleNew}
-          >
-            Novo Cliente
-          </Button>
-        </Box>
-      </Box>
+      <ClientListHeader
+        loading={loading}
+        clientsCount={clients.length}
+        onGeneratePDF={handleGeneratePDF}
+        onNewClient={handleNew}
+      />
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
@@ -144,7 +156,7 @@ export const ClientList = () => {
           <CircularProgress />
         </Box>
       ) : clients.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 3 }}>
+        <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 1 }}>
           <Typography variant="h6" color="text.secondary" fontWeight={600}>
             Nenhum cliente cadastrado
           </Typography>
@@ -153,67 +165,43 @@ export const ClientList = () => {
           </Typography>
         </Paper>
       ) : (
-        <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ bgcolor: '#F5F7FA' }}>
-                <TableCell sx={{ fontWeight: 700, color: '#001E27', width: '80px' }}>#</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: '#001E27' }}>Nome</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: '#001E27' }}>E-mail</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: '#001E27' }}>Telefone</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: '#001E27' }}>Endereço</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 700, color: '#001E27' }}>Ações</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {clients.map((client, index) => (
-                <TableRow
-                  key={client.id}
-                  sx={{
-                    '&:last-child td, &:last-child th': { border: 0 },
-                    '&:hover': {
-                      bgcolor: '#F5F7FA',
-                    },
-                  }}
-                >
-                  <TableCell sx={{ fontWeight: 600, color: '#666' }}>{index + 1}</TableCell>
-                  <TableCell sx={{ fontWeight: 600, color: '#001E27' }}>{client.name}</TableCell>
-                  <TableCell>{client.email}</TableCell>
-                  <TableCell>{client.phone}</TableCell>
-                  <TableCell>{client.address}</TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      onClick={() => handleEdit(client.id)}
-                      size="small"
-                      sx={{
-                        color: '#00D9C0',
-                        '&:hover': {
-                          bgcolor: '#00D9C020',
-                        },
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <ClientTable
+          clients={clients}
+          onView={handleView}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
+        />
       )}
 
       <Snackbar
         open={!!successMessage}
         autoHideDuration={3000}
         onClose={() => setSuccessMessage('')}
-        message={successMessage}
-      />
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert severity="success" onClose={() => setSuccessMessage('')}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
 
       <ClientFormModal
         open={modalOpen}
         onClose={handleModalClose}
         onSuccess={handleSuccess}
         clientId={selectedClientId}
+      />
+
+      <ClientViewModal
+        open={viewModalOpen}
+        onClose={handleViewModalClose}
+        client={selectedClient}
+      />
+
+      <ClientDeleteConfirm
+        open={deleteConfirmOpen}
+        onCancel={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        client={clientToDelete}
       />
     </Box>
   );

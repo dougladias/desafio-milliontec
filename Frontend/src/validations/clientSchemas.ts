@@ -14,5 +14,7 @@ export const clientSchema = yup.object().shape({
       const cleaned = value.replace(/\D/g, '');
       return cleaned.length >= 10;
     }),
-  address: yup.string().required('Endereço é obrigatório'),
+  // address continua obrigatório para retrocompatibilidade
+  // mas será preenchido automaticamente pelo AddressInput
+  address: yup.string().notRequired(),
 });
