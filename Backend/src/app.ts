@@ -13,6 +13,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Rota de health check na raiz
+app.get('/health', (_req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'API está funcionando',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Documentação Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { display: none }',
