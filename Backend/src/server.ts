@@ -22,7 +22,5 @@ const startServer = async () => {
   }
 };
 
-// Inicia o servidor apenas se não estiver rodando como serverless (Vercel)
-if (require.main === module) {
-  startServer();
-}
+// Inicia o servidor
+startServer();
