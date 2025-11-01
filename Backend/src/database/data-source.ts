@@ -12,7 +12,10 @@ export const AppDataSource = new DataSource({
   username: config.database.username,
   password: config.database.password,
   database: config.database.database,
-  
+
+  // Configuração SSL para conexões na nuvem
+  ssl: config.database.ssl ? { rejectUnauthorized: false } : false,
+
   // Em produção, usamos migrations para maior segurança
   synchronize: config.nodeEnv === 'development',
 

@@ -16,6 +16,7 @@ export const config = {
     username: process.env.DB_USERNAME || 'postgres',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_DATABASE || 'clientes_db',
+    ssl: process.env.DB_SSL === 'true',
   },
 
   // Configurações de autenticação
