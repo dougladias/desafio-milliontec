@@ -127,12 +127,12 @@ export const ClientList = () => {
     setSuccessMessage(message);
   };
 
-  const handleGeneratePDF = () => {
+  const handleGeneratePDF = async () => {
     if (clients.length === 0) {
       setError('Não há clientes para gerar o PDF');
       return;
     }
-    generateClientsPDF(clients);
+    await generateClientsPDF(clients);
     setSuccessMessage('PDF gerado com sucesso!');
   };
 
