@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Snackbar, Alert } from '@mui/material';
+import { Box, Snackbar, Alert, IconButton } from '@mui/material';
+import { Person, Lock, Visibility, VisibilityOff } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAuth } from '../../contexts/AuthContext';
@@ -16,6 +17,7 @@ export const LoginForm = () => {
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [openErrorToast, setOpenErrorToast] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -57,15 +59,26 @@ export const LoginForm = () => {
           autoFocus
           error={errors.username?.message}
           disabled={loading}
+          startIcon={<Person />}
         />
 
         <FormInput
           register={register('password')}
           label="Senha"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           autoComplete="current-password"
           error={errors.password?.message}
           disabled={loading}
+          startIcon={<Lock />}
+          endIcon={
+            <IconButton
+              onClick={() => setShowPassword(!showPassword)}
+              edge="end"
+              tabIndex={-1}
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          }
         />
 
         <FormButton type="submit" loading={loading}>

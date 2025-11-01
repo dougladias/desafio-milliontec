@@ -155,22 +155,25 @@ export const ClientList = () => {
         <Box display="flex" justifyContent="center" py={8}>
           <CircularProgress />
         </Box>
-      ) : clients.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 1 }}>
-          <Typography variant="h6" color="text.secondary" fontWeight={600}>
-            Nenhum cliente cadastrado
-          </Typography>
-          <Typography variant="body2" color="text.secondary" mt={1}>
-            Clique em "Novo Cliente" para começar
-          </Typography>
-        </Paper>
       ) : (
-        <ClientTable
-          clients={clients}
-          onView={handleView}
-          onEdit={handleEdit}
-          onDelete={handleDeleteClick}
-        />
+        <>
+          <ClientTable
+            clients={clients}
+            onView={handleView}
+            onEdit={handleEdit}
+            onDelete={handleDeleteClick}
+          />
+          {clients.length === 0 && (
+            <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 1, mt: 2 }}>
+              <Typography variant="h6" color="text.secondary" fontWeight={600}>
+                Nenhum cliente cadastrado
+              </Typography>
+              <Typography variant="body2" color="text.secondary" mt={1}>
+                Clique em "Novo Cliente" para começar
+              </Typography>
+            </Paper>
+          )}
+        </>
       )}
 
       <Snackbar

@@ -5,7 +5,11 @@ export const clientSchema = yup.object().shape({
   email: yup
     .string()
     .required('E-mail é obrigatório')
-    .email('E-mail inválido'),
+    .email('E-mail inválido')
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      'E-mail deve ter um domínio válido (ex: usuario@exemplo.com)'
+    ),
   phone: yup
     .string()
     .required('Telefone é obrigatório')
